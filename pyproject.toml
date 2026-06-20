@@ -1,0 +1,27 @@
+[project]
+name = "inferencetimegepa"
+version = "0.1.0"
+description = "Devin team harness for GEPA-style prompt optimization on KernelBench tasks."
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+openai = ["openai>=1.0.0"]
+anthropic = ["anthropic>=0.40.0"]
+gepa = ["gepa>=0.0.0"]
+tracking = ["wandb>=0.17.0"]
+dev = ["pytest>=8.0.0"]
+
+[project.scripts]
+inferencetimegepa = "inferencetimegepa.cli:main"
+
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+norecursedirs = ["third_party", "runs", "tmp"]

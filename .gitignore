@@ -1,0 +1,16 @@
+.DS_Store
+.env
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+runs/
+tmp/
+wandb/
+
+third_party/KernelBench/
+
+*.log

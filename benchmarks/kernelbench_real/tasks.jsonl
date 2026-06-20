@@ -1,0 +1,1 @@
+{"task_id":"kernelbench_l1/2_matmul","baseline_path":"/root/KernelBench/KernelBench/level1/2_Standard_matrix_multiplication_.py","entry_point":"ModelNew","metadata":{"level":1,"problem_id":2,"goal":"Define class ModelNew(nn.Module) equivalent to baseline Model while reducing GPU energy. Candidate must be self-contained Python code."}}

@@ -1,0 +1,32 @@
+{
+  "name": "devin_team_prompt_gepa_local_smoke",
+  "model": "devin-cli-team",
+  "tasks": "benchmarks/smoke.jsonl",
+  "rollouts_per_agent": 2,
+  "agents": [
+    {
+      "agent_id": "kernel_author",
+      "role": "Implement candidate KernelBench kernels",
+      "prompt_path": "prompts/roles/kernel_author.md",
+      "system_prompt": "Implement the requested KernelBench kernel candidate. Return only the files or patches needed for a correct, faster implementation. Do not propose RL, fine-tuning, LoRA, or model-weight changes."
+    },
+    {
+      "agent_id": "correctness_reviewer",
+      "role": "Find correctness and shape issues before benchmarking",
+      "prompt_path": "prompts/roles/correctness_reviewer.md",
+      "system_prompt": "Review KernelBench candidate kernels for correctness, dtype, shape, device, aliasing, and numerical tolerance issues. Return concrete fixes and tests. Do not optimize model weights."
+    },
+    {
+      "agent_id": "benchmark_engineer",
+      "role": "Run benchmarks and summarize latency/energy evidence",
+      "prompt_path": "prompts/roles/benchmark_engineer.md",
+      "system_prompt": "Run KernelBench checks and benchmark candidates against baselines. Report correctness, latency, energy, accepted status, and reproducible commands."
+    },
+    {
+      "agent_id": "gepa_reflector",
+      "role": "Reflect on traces and propose better Devin team prompts",
+      "prompt_path": "prompts/roles/gepa_reflector.md",
+      "system_prompt": "Use GEPA-style reflection over implementation traces and benchmark outcomes to propose improved prompts for the Devin team. Optimize instructions only, not model weights or kernels directly."
+    }
+  ]
+}

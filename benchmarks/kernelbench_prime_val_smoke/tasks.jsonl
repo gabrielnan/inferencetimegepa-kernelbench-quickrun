@@ -1,0 +1,1 @@
+{"task_id":"kb_l1_48_mean_reduction","baseline_path":"third_party/KernelBench/KernelBench/level1/48_Mean_reduction_over_a_dimension.py","entry_point":"ModelNew","metadata":{"level":1,"problem_id":48,"category":"validation_smoke","goal":"Held-out smoke validation task."}}

@@ -1,0 +1,1 @@
+{"task_id":"kernelbench_smoke/identity","baseline_path":"benchmarks/kernelbench_smoke/baseline.py","entry_point":"kernel_fn","metadata":{"goal":"Return a drop-in replacement for kernel_fn. This task is only for local harness smoke tests; GEPA/Devin runs must use an external KernelBench compare command."}}

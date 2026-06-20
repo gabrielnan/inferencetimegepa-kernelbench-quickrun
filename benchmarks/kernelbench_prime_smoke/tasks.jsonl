@@ -1,0 +1,1 @@
+{"task_id":"kb_l1_19_relu","baseline_path":"third_party/KernelBench/KernelBench/level1/19_ReLU.py","entry_point":"ModelNew","metadata":{"level":1,"problem_id":19,"goal":"Implement ModelNew equivalent to Model for ReLU activation. Optimize steady-state H100 correctness, latency, and Zeus energy; do not rely on scorer internals."}}
