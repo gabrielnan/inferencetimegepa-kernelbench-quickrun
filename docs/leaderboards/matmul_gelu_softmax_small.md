@@ -93,8 +93,8 @@ checks are not eligible submissions, but they are still useful context.
 | `torch.compile` equivalent | no | yes | `9.651 mJ/fwd` | `6.266 mJ/fwd` | `0.0570 ms` | n/a | Diagnostic only; slower and higher energy for this shape |
 | cuBLASLt GEMM + separate custom GELU + separate custom softmax | yes | yes | `3.235 mJ/fwd` | `6.437 mJ/fwd` | `0.0184 ms` | `0.0212 ms` | Strong comparator for "custom kernels but no GELU+softmax fusion" |
 | cuBLASLt bias epilogue + fused custom GELU/softmax | yes | yes | `2.863 mJ/fwd` | `6.209 mJ/fwd` | `0.0159 ms` | `0.0193 ms` | Strong comparator for using cuBLASLt bias epilogue before the fused post-op |
-| `candidate_v5.py` | yes | yes | `2.371 mJ/fwd` | `6.703 mJ/fwd` | `0.0157 ms` | `0.0191 ms` | Current best focused-energy row |
-| `candidate_v7.py` | yes | yes | `2.419 mJ/fwd` | `6.729 mJ/fwd` | `0.0160 ms` | `0.0187 ms` | Current best time-track row |
+| `candidate_v5.py` | yes | yes | `2.863 mJ/fwd` | `6.274 mJ/fwd` | `0.0159 ms` | `0.0191 ms` | Current strong focused-energy row; conservative `200,000`-forward stress value |
+| `candidate_v7.py` | yes | yes | `2.797 mJ/fwd` | `6.430 mJ/fwd` | `0.0157 ms` | `0.0187 ms` | Current best focused-energy and time-track row; conservative `200,000`-forward stress value |
 
 CUTLASS/CuTe was not measured in this pass because the active H100 image did
 not have a CUTLASS checkout or Python package available. A future CUTLASS/CuTe
