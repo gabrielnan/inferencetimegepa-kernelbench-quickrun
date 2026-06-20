@@ -66,6 +66,22 @@ python3 scripts/score_focus3_submission.py \
 
 For comparison, the upstream KernelBench "Kernelsseum" public leaderboard ranks per-task speedup over Torch on NVIDIA L40S. That is useful context, but it is not the same track as this H100 energy leaderboard.
 
+## External Runtime Baselines
+
+These rows are diagnostic cross-checks against public runtime-oriented
+implementations. They are not ranked unless they satisfy the same submission and
+static-check rules as local candidates.
+
+| Source | Public task | Public runtime result | Correct under this scorer | H100 time result | H100 energy result | Notes |
+|---|---|---:|---:|---:|---:|---|
+| [Kernelsseum `gpt-o1`](https://raw.githubusercontent.com/ScalingIntelligence/KernelBenchLeaderboard/refs/heads/main/docs/assets/solutions/5c36dadcac0846f0a4bc95a39760ad9d.py) | `Level 2: 99_Matmul_GELU_Softmax` | `0.7604x` vs Torch on public L40S leaderboard | yes | `0.0257 ms` candidate vs `0.0241 ms` paired baseline | `1336.480 J` candidate vs `1253.301 J` paired baseline over `200,000` forwards | Uses PyTorch `nn.Linear` and `F.softmax`; custom part is approximate tanh-GELU only, so this is provenance/diagnostic rather than a clean custom-kernel submission |
+
+The current public Kernelsseum data has one entry for the exact corresponding
+task. Adjacent GEMM, matmul, GELU, and softmax leaderboard entries can still be
+used as implementation references, but they must be ported to the exact
+`nn.Linear(1024, 1024) -> exact GELU -> softmax(dim=1)` behavior before they are
+eligible for this leaderboard.
+
 The scorer runs the KernelBench time-track check and the corrected warmed
 repeated-forward energy protocol described in `docs/leaderboards/evaluation.md`.
 Do not use full-subprocess Zeus energy for the ranked energy table.

@@ -15,6 +15,11 @@ and benchmark settings are comparable. The full scoring contract is in
 Use `scripts/score_focus3_submission.py` to produce the normalized JSON record
 for a candidate before adding it to a ranked table.
 
+External public implementations can be measured with the same scorer, but keep
+them out of the ranked submission tables unless they satisfy the same submission
+rules. Record them as diagnostic baselines with source links, scorer settings,
+correctness status, and static-check caveats.
+
 ## Tasks
 
 | Task | Category | Leaderboard |
