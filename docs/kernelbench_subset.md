@@ -1,85 +1,73 @@
 # KernelBench Subset
 
-We are not hill-climbing on the full KernelBench suite. The autonomous loop uses a deliberately small mixed subset so each prompt mutation gets fast feedback while still covering the major kernel patterns Devin needs to learn.
+We are not hill-climbing on the full KernelBench suite. The active main run uses the `focus3` subset: one cheap task, one mid-cost task, one expensive task, and one held-out validation task.
 
-For the current 4-agent setup, that means a smaller subset than the original broad train/val split. One task now expands into 1 router run plus 3 implementation attempts, so iteration time grows quickly and both GEPA and RL get better signal from a tighter task set.
-
-## Recommended Small Subset
-
-Recommended first optimization split for both GEPA and the RL comparison:
-
-- Train: 4 tasks
-- Validation: 2 tasks
-- Final pass: broader 8-16 task evaluation only after prompt quality improves
-
-Concrete files:
-
-- `benchmarks/kernelbench_prime_train_small/tasks.jsonl`
-- `benchmarks/kernelbench_prime_val_small/tasks.jsonl`
-
-Recommended train mix:
-
-- `kb_l1_19_relu`
-- `kb_l1_40_layernorm`
-- `kb_l2_1_conv2d_relu_biasadd`
-- `kb_l3_1_mlp`
-
-Recommended held-out validation mix:
-
-- `kb_l1_48_mean_reduction`
-- `kb_l2_40_matmul_scaling_residualadd`
-
-This gives one simple elementwise kernel, one normalization/reduction-heavy pattern, one Level 2 fused operator, and one small model-level task. That is enough diversity to pressure the prompts without stretching one GEPA iteration into a multi-hour pass.
-
-If matmul-specific prompt behavior becomes the main failure mode, swap one of the simpler train tasks for `kb_l1_2_matmul` and keep the rest of the small split fixed.
-
-## Focus3 Public Run
-
-For the public reproducible run, we also keep a purpose-built 3-task benchmark set with one cheap, one mid, and one expensive target:
+## Focus3 Main Run
 
 Standalone replication repo:
 
 - `https://github.com/sjbaebae/kernelbench-focus3-quickrun`
+
+Active train manifest:
+
+- `benchmarks/kernelbench_focus3/train_tasks.jsonl`
+
+Active validation manifest:
+
+- `benchmarks/kernelbench_focus3/val_tasks.jsonl`
+
+Task shape:
 
 - cheap: fused `matmul + gelu + softmax`
 - mid: `MLP`
 - expensive: reduced `MinGPT` causal attention
 - held-out validation: reduced `LayerNorm`
 
-Concrete files:
+Concrete benchmark files:
 
-- `benchmarks/kernelbench_focus3/train_tasks.jsonl`
-- `benchmarks/kernelbench_focus3/val_tasks.jsonl`
+- `benchmarks/kernelbench_focus3/matmul_gelu_softmax_small.py`
+- `benchmarks/kernelbench_focus3/mlp_small.py`
+- `benchmarks/kernelbench_focus3/mingpt_causal_attention_small.py`
+- `benchmarks/kernelbench_focus3/layernorm_small.py`
 
-This is the easiest set to hand to other users because it preserves task diversity while keeping iteration time predictable on a router + 3 subagent loop.
+This is the main run because it preserves kernel diversity while keeping router + 3 subagent iteration cost manageable.
 
-## Broader Train Split
+## Alternate Small Split
 
-`benchmarks/kernelbench_prime_train/tasks.jsonl` has 8 tasks:
+If we need a broader but still reduced training mix later, the alternate small split is:
 
-- Level 1: matmul, ReLU, softmax, layer norm, sum reduction
-- Level 2: Conv2D + ReLU + bias fusion, GEMM + multiply + LeakyReLU fusion
-- Level 3: small MLP
+- train: `benchmarks/kernelbench_prime_train_small/tasks.jsonl`
+- val: `benchmarks/kernelbench_prime_val_small/tasks.jsonl`
 
-This gives broad coverage of elementwise, matmul, reduction, normalization, convolution/fusion, and small-model structure, but it is better used after the small subset starts producing stable correct kernels.
+That split is useful for expansion after the `focus3` run starts producing stable correct kernels.
 
-## Broader Validation Split
+## Broader Splits
 
-`benchmarks/kernelbench_prime_val/tasks.jsonl` has 4 held-out tasks:
+Broader train:
 
-- batched matmul
-- mean reduction
-- matmul + residual fusion
-- LeNet5
+- `benchmarks/kernelbench_prime_train/tasks.jsonl`
 
-Use these to detect whether prompt changes generalize beyond the training tasks.
+Broader validation:
 
-## Final Pass
+- `benchmarks/kernelbench_prime_val/tasks.jsonl`
 
-`benchmarks/kernelbench_prime_final/tasks.jsonl` has 16 tasks: train + validation plus harder held-outs such as max reduction, MinGPT GELU, and additional Level 2 fusion tasks.
+Final pass:
 
-This should be run after the time-budgeted hill climb to estimate final prompt quality, not as the main optimization set.
+- `benchmarks/kernelbench_prime_final/tasks.jsonl`
+
+Those are for later checkpointed evaluation or final assessment, not for the current main optimization loop.
 
 ## Metrics
 
-Each task tracks correctness, accepted status, latency, Zeus GPU energy for baseline and candidate, reward, and score. First-run CUDA extension compilation is excluded from Zeus measurement.
+Each task tracks:
+
+- correctness
+- accepted status
+- baseline latency
+- candidate latency
+- baseline Zeus energy
+- candidate Zeus energy
+- reward
+- score
+
+First-run CUDA extension compilation is excluded from Zeus measurement.
