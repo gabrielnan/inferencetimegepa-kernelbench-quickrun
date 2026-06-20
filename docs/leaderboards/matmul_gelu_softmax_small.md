@@ -78,7 +78,27 @@ static-check rules as local candidates.
 
 | Source | Public task | Public runtime result | Correct under this scorer | H100 time result | H100 energy result | Notes |
 |---|---|---:|---:|---:|---:|---|
-| [Kernelsseum `gpt-o1`](https://raw.githubusercontent.com/ScalingIntelligence/KernelBenchLeaderboard/refs/heads/main/docs/assets/solutions/5c36dadcac0846f0a4bc95a39760ad9d.py) | `Level 2: 99_Matmul_GELU_Softmax` | `0.7604x` vs Torch on public L40S leaderboard | yes | `0.0257 ms` candidate vs `0.0241 ms` paired baseline | `1336.480 J` candidate vs `1253.301 J` paired baseline over `200,000` forwards; `6.682 mJ/forward` candidate vs `6.267 mJ/forward` baseline | Uses PyTorch `nn.Linear` and `F.softmax`; custom part is approximate tanh-GELU only, so this is provenance/diagnostic rather than a clean custom-kernel submission |
+| [Kernelsseum `gpt-o1`](https://raw.githubusercontent.com/ScalingIntelligence/KernelBenchLeaderboard/refs/heads/main/docs/assets/solutions/5c36dadcac0846f0a4bc95a39760ad9d.py) | `Level 2: 99_Matmul_GELU_Softmax` | `0.7604x` vs Torch on public L40S leaderboard | yes | `0.0259 ms` candidate vs `0.0242 ms` paired baseline | `1358.847 J` candidate vs `1257.811 J` paired baseline over `200,000` forwards; `6.794 mJ/forward` candidate vs `6.289 mJ/forward` baseline | Uses PyTorch `nn.Linear` and `F.softmax`; custom part is approximate tanh-GELU only, so this is provenance/diagnostic rather than a clean custom-kernel submission |
+
+## Strong Baseline Ladder
+
+These baselines are intended to separate ordinary fusion wins from more
+meaningful kernel improvements. Rows use the same focused forward-only energy
+scorer as the leaderboard rows. Diagnostic rows that fail KernelBench static
+checks are not eligible submissions, but they are still useful context.
+
+| Baseline | Eligible submission | Correct | Focused energy | Paired baseline energy | Focused latency | Time-track latency | Notes |
+|---|---:|---:|---:|---:|---:|---:|---|
+| PyTorch eager equivalent | no | yes | `6.265 mJ/fwd` | `6.317 mJ/fwd` | `0.0278 ms` | n/a | Diagnostic only; static check rejects PyTorch compute ops |
+| `torch.compile` equivalent | no | yes | `9.651 mJ/fwd` | `6.266 mJ/fwd` | `0.0570 ms` | n/a | Diagnostic only; slower and higher energy for this shape |
+| cuBLASLt GEMM + separate custom GELU + separate custom softmax | yes | yes | `3.235 mJ/fwd` | `6.437 mJ/fwd` | `0.0184 ms` | `0.0212 ms` | Strong comparator for "custom kernels but no GELU+softmax fusion" |
+| cuBLASLt bias epilogue + fused custom GELU/softmax | yes | yes | `2.863 mJ/fwd` | `6.209 mJ/fwd` | `0.0159 ms` | `0.0193 ms` | Strong comparator for using cuBLASLt bias epilogue before the fused post-op |
+| `candidate_v5.py` | yes | yes | `2.371 mJ/fwd` | `6.703 mJ/fwd` | `0.0157 ms` | `0.0191 ms` | Current best focused-energy row |
+| `candidate_v7.py` | yes | yes | `2.419 mJ/fwd` | `6.729 mJ/fwd` | `0.0160 ms` | `0.0187 ms` | Current best time-track row |
+
+CUTLASS/CuTe was not measured in this pass because the active H100 image did
+not have a CUTLASS checkout or Python package available. A future CUTLASS/CuTe
+row should use the same scorer before it is compared against the rows above.
 
 The current public Kernelsseum data has one entry for the exact corresponding
 task. Adjacent GEMM, matmul, GELU, and softmax leaderboard entries can still be
