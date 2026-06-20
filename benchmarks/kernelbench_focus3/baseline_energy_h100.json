@@ -1,0 +1,19 @@
+{
+  "gpu": "NVIDIA H100 PCIe",
+  "num_correct_trials": 1,
+  "num_perf_trials": 5,
+  "tasks": {
+    "kb_focus3_matmul_gelu_softmax_small": {
+      "baseline_energy_j": 925.807,
+      "baseline_latency_ms": 0.048
+    },
+    "kb_focus3_mlp_small": {
+      "baseline_energy_j": 1008.412,
+      "baseline_latency_ms": 0.346
+    },
+    "kb_focus3_mingpt_causal_attention_small": {
+      "baseline_energy_j": 966.27,
+      "baseline_latency_ms": 0.647
+    }
+  }
+}
