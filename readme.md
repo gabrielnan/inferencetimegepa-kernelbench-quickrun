@@ -169,6 +169,14 @@ This repeatedly runs Devin + Prime KernelBench scoring, writes a reflection pack
 
 Dataset subset details are in `docs/kernelbench_subset.md`.
 
+For the current focused H100 leaderboards across the three Focus3 training
+tasks and the measurement contract for energy/time tracks, see
+`docs/leaderboards/README.md`.
+
+Use `scripts/score_focus3_submission.py` to score Focus3 submissions before
+adding leaderboard rows. The energy track uses long warmed repeated-forward
+windows in both measurement orders to reduce power-state noise.
+
 For the 4-agent GLM5.2 team, prefer the reduced subset first. One train task now means 1 router run, 3 implementation attempts, and up to 3 Prime scores, so the broad 8-task split is too slow for dense GEPA or RL feedback.
 
 Use the smaller mixed subset for both GEPA and the RL comparison, then run the broader train/final sets only for checkpointed validation or end-of-run evaluation.
