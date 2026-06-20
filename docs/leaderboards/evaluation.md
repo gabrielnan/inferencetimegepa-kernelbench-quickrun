@@ -68,8 +68,12 @@ include:
 - `measurement_scope=official_kernel_only_repeated_forward_pair`
 - `warmup_iters`
 - `measure_iters`
-- `candidate_energy_j`
-- `baseline_energy_j`
+- `candidate_energy_j` and `baseline_energy_j` as total GPU board energy for
+  the repeated-forward measurement window
+- `candidate_energy_per_iter_j` and `baseline_energy_per_iter_j` so the result
+  is readable as energy per forward
+- average GPU board power, computed as window joules divided by measured window
+  time, as a sanity check on the energy units
 - `candidate_latency_ms`
 - `baseline_latency_ms`
 - correctness status and tolerance
@@ -88,6 +92,11 @@ trials, cache clearing, and scorer overhead. It may be useful for debugging, but
 it is not an energy-track leaderboard metric.
 
 Diagnostic rows must not be ranked against kernel-only energy rows.
+
+The H100 energy numbers can look large when `measure_iters` is high. For
+example, `200,000` forwards at roughly `0.027 ms` per forward produces a
+measurement window around `5.4 s`; at about `230 W` GPU board power, the total
+window energy is around `1,250 J`, or about `6.25 mJ` per forward.
 
 ## Submission Rules
 

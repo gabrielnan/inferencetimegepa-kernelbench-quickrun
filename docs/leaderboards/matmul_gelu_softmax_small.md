@@ -8,24 +8,28 @@ Hardware for the results below: NVIDIA H100 80GB HBM3 on Prime Intellect / Datac
 
 The benchmark has two tracks:
 
-- Energy track: lower warmed repeated-forward Zeus GPU energy is better. This is the primary H100 track for energy-aware optimization.
+- Energy track: lower warmed repeated-forward Zeus GPU board energy is better. This is the primary H100 track for energy-aware optimization.
 - Time track: lower KernelBench CUDA-event latency is better. This tracks steady-state runtime against the same paired PyTorch baseline.
 
 Each candidate row is paired with a same-run PyTorch reference measurement.
 Energy results should not be compared across hardware or scorer settings without
-re-running the baseline. The old full-subprocess Zeus numbers around `1000 J`
-are diagnostic only and are intentionally excluded from the energy ranking.
+re-running the baseline. The energy table reports total energy for the
+repeated-forward measurement window plus per-forward energy in millijoules. A
+`1000 J`-scale total is plausible for a `200,000`-forward H100 board-energy
+window; it is not the energy for one forward. The old full-subprocess Zeus
+numbers are diagnostic only and are intentionally excluded from the energy
+ranking.
 
 ## Energy Track
 
-| Rank | Submission | Correct | Candidate energy | Paired baseline energy | Delta vs paired baseline | Notes |
-|---:|---|---:|---:|---:|---:|---|
-| 1 | `candidate_v7.py` | yes | `559.458 J` | `1286.071 J` | `-726.613 J` | Best controlled scorer energy run so far; mean of both measurement orders over `200,000` forwards |
-| 2 | `candidate_v5.py` | yes | `572.503 J` | `1254.859 J` | `-682.356 J` | Controlled scorer energy win; mean of both measurement orders over `200,000` forwards |
-| 3 | `candidate_v3.py` | yes | `92.709 J` | `111.595 J` | `-18.886 J` | Corrected kernel-only energy win |
-| 4 | PyTorch baseline | yes | `109.136-134.779 J` | n/a | n/a | Same H100 scorer range observed across paired runs |
-| 5 | `candidate_v6.py` | yes | `115.665 J` | `109.136 J` | `+6.529 J` | Latency win, corrected energy regression |
-| 6 | `candidate_v2.py` | yes | `126.586 J` | `111.403 J` | `+15.183 J` | Latency win, corrected energy regression |
+| Rank | Submission | Correct | Candidate window energy | Candidate energy/forward | Paired baseline window energy | Paired baseline energy/forward | Delta vs paired baseline | Notes |
+|---:|---|---:|---:|---:|---:|---:|---:|---|
+| 1 | `candidate_v7.py` | yes | `559.458 J` | `2.797 mJ` | `1286.071 J` | `6.430 mJ` | `-726.613 J` | Best controlled scorer energy run so far; mean of both measurement orders over `200,000` forwards |
+| 2 | `candidate_v5.py` | yes | `572.503 J` | `2.863 mJ` | `1254.859 J` | `6.274 mJ` | `-682.356 J` | Controlled scorer energy win; mean of both measurement orders over `200,000` forwards |
+| 3 | `candidate_v3.py` | yes | `92.709 J` | n/a | `111.595 J` | n/a | `-18.886 J` | Corrected kernel-only energy win |
+| 4 | PyTorch baseline | yes | `109.136-134.779 J` | n/a | n/a | n/a | n/a | Same H100 scorer range observed across paired runs |
+| 5 | `candidate_v6.py` | yes | `115.665 J` | n/a | `109.136 J` | n/a | `+6.529 J` | Latency win, corrected energy regression |
+| 6 | `candidate_v2.py` | yes | `126.586 J` | n/a | `111.403 J` | n/a | `+15.183 J` | Latency win, corrected energy regression |
 
 Top rows above use `measurement_scope=official_kernel_only_repeated_forward_pair`,
 `warmup_iters=200`, and `measure_iters=200000` with both `candidate,baseline`
@@ -74,7 +78,7 @@ static-check rules as local candidates.
 
 | Source | Public task | Public runtime result | Correct under this scorer | H100 time result | H100 energy result | Notes |
 |---|---|---:|---:|---:|---:|---|
-| [Kernelsseum `gpt-o1`](https://raw.githubusercontent.com/ScalingIntelligence/KernelBenchLeaderboard/refs/heads/main/docs/assets/solutions/5c36dadcac0846f0a4bc95a39760ad9d.py) | `Level 2: 99_Matmul_GELU_Softmax` | `0.7604x` vs Torch on public L40S leaderboard | yes | `0.0257 ms` candidate vs `0.0241 ms` paired baseline | `1336.480 J` candidate vs `1253.301 J` paired baseline over `200,000` forwards | Uses PyTorch `nn.Linear` and `F.softmax`; custom part is approximate tanh-GELU only, so this is provenance/diagnostic rather than a clean custom-kernel submission |
+| [Kernelsseum `gpt-o1`](https://raw.githubusercontent.com/ScalingIntelligence/KernelBenchLeaderboard/refs/heads/main/docs/assets/solutions/5c36dadcac0846f0a4bc95a39760ad9d.py) | `Level 2: 99_Matmul_GELU_Softmax` | `0.7604x` vs Torch on public L40S leaderboard | yes | `0.0257 ms` candidate vs `0.0241 ms` paired baseline | `1336.480 J` candidate vs `1253.301 J` paired baseline over `200,000` forwards; `6.682 mJ/forward` candidate vs `6.267 mJ/forward` baseline | Uses PyTorch `nn.Linear` and `F.softmax`; custom part is approximate tanh-GELU only, so this is provenance/diagnostic rather than a clean custom-kernel submission |
 
 The current public Kernelsseum data has one entry for the exact corresponding
 task. Adjacent GEMM, matmul, GELU, and softmax leaderboard entries can still be

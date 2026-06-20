@@ -316,6 +316,10 @@ def write_remote_energy_runner(args: argparse.Namespace, remote: str) -> None:
                 "candidate_energy_j": candidate_stats["energy_j"],
                 "baseline_energy_per_iter_j": baseline_stats["energy_per_iter_j"],
                 "candidate_energy_per_iter_j": candidate_stats["energy_per_iter_j"],
+                "baseline_avg_power_w_cuda_time": baseline_stats["avg_power_w_cuda_time"],
+                "candidate_avg_power_w_cuda_time": candidate_stats["avg_power_w_cuda_time"],
+                "baseline_avg_power_w_wall_time": baseline_stats["avg_power_w_wall_time"],
+                "candidate_avg_power_w_wall_time": candidate_stats["avg_power_w_wall_time"],
                 "baseline_iters_per_second": baseline_stats["iters_per_second"],
                 "candidate_iters_per_second": candidate_stats["iters_per_second"],
                 "measurements": measurements,
@@ -355,10 +359,19 @@ def write_remote_energy_runner(args: argparse.Namespace, remote: str) -> None:
                 measurement = monitor.end_window(label)
                 energy_j = sum(float(v) for v in measurement.gpu_energy.values())
             elapsed_ms = float(start_event.elapsed_time(end_event))
+            total_cuda_event_s = elapsed_ms / 1000.0
             return {
                 "latency_ms": elapsed_ms / measure_iters,
                 "energy_j": energy_j,
                 "energy_per_iter_j": None if energy_j is None else energy_j / measure_iters,
+                "total_cuda_event_s": total_cuda_event_s,
+                "wall_s": wall_seconds,
+                "avg_power_w_cuda_time": (
+                    None if energy_j is None or total_cuda_event_s <= 0 else energy_j / total_cuda_event_s
+                ),
+                "avg_power_w_wall_time": (
+                    None if energy_j is None or wall_seconds <= 0 else energy_j / wall_seconds
+                ),
                 "iters_per_second": measure_iters / wall_seconds if wall_seconds > 0 else math.inf,
                 "zeus_available": zeus_available,
             }
@@ -372,6 +385,10 @@ def write_remote_energy_runner(args: argparse.Namespace, remote: str) -> None:
                 "latency_ms",
                 "energy_j",
                 "energy_per_iter_j",
+                "total_cuda_event_s",
+                "wall_s",
+                "avg_power_w_cuda_time",
+                "avg_power_w_wall_time",
                 "iters_per_second",
             ]
             out = {}
