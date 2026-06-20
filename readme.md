@@ -48,6 +48,33 @@ PRIME_REMOTE_ROOT=/home/ubuntu/inferencetimegepa
 PRIME_KERNELBENCH_ROOT=/home/ubuntu/KernelBench
 ```
 
+## Focus3 Run
+
+Current recommended public replication target for this specific experiment:
+
+`https://github.com/sjbaebae/kernelbench-focus3-quickrun`
+
+```bash
+cp .env.example .env
+devin auth
+bash scripts/bootstrap_quickrun.sh
+bash scripts/quickrun_5h_focus3.sh
+```
+
+This launches the exact 5-hour `focus3` run:
+
+- cheap: `benchmarks/kernelbench_focus3/matmul_gelu_softmax_small.py`
+- mid: `benchmarks/kernelbench_focus3/mlp_small.py`
+- expensive: `benchmarks/kernelbench_focus3/mingpt_causal_attention_small.py`
+- held-out validation: `benchmarks/kernelbench_focus3/layernorm_small.py`
+
+Task manifests:
+
+- `benchmarks/kernelbench_focus3/train_tasks.jsonl`
+- `benchmarks/kernelbench_focus3/val_tasks.jsonl`
+
+The standalone public runner repo above is the easiest way for other people to reproduce this exact `3` task train + `1` task validation setup with baseline energy tracking.
+
 ## Remote GPU
 
 Current Prime Intellect SSH target:

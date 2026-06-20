@@ -33,6 +33,26 @@ This gives one simple elementwise kernel, one normalization/reduction-heavy patt
 
 If matmul-specific prompt behavior becomes the main failure mode, swap one of the simpler train tasks for `kb_l1_2_matmul` and keep the rest of the small split fixed.
 
+## Focus3 Public Run
+
+For the public reproducible run, we also keep a purpose-built 3-task benchmark set with one cheap, one mid, and one expensive target:
+
+Standalone replication repo:
+
+- `https://github.com/sjbaebae/kernelbench-focus3-quickrun`
+
+- cheap: fused `matmul + gelu + softmax`
+- mid: `MLP`
+- expensive: reduced `MinGPT` causal attention
+- held-out validation: reduced `LayerNorm`
+
+Concrete files:
+
+- `benchmarks/kernelbench_focus3/train_tasks.jsonl`
+- `benchmarks/kernelbench_focus3/val_tasks.jsonl`
+
+This is the easiest set to hand to other users because it preserves task diversity while keeping iteration time predictable on a router + 3 subagent loop.
+
 ## Broader Train Split
 
 `benchmarks/kernelbench_prime_train/tasks.jsonl` has 8 tasks:

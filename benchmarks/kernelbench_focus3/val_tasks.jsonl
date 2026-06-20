@@ -1,0 +1,1 @@
+{"task_id":"kb_focus3_layernorm_small","baseline_path":"benchmarks/kernelbench_focus3/layernorm_small.py","entry_point":"ModelNew","metadata":{"level":1,"category":"normalization","goal":"Implement ModelNew equivalent to Model. Optimize correctness and steady-state performance on the reduced LayerNorm validation benchmark."}}
