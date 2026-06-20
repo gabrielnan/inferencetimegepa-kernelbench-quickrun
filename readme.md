@@ -169,6 +169,10 @@ This repeatedly runs Devin + Prime KernelBench scoring, writes a reflection pack
 
 Dataset subset details are in `docs/kernelbench_subset.md`.
 
+Time-track candidate submissions for the focused `matmul_gelu_softmax_small`
+task are stored under
+`submissions/kernelbench_focus3/matmul_gelu_softmax_small/time/`.
+
 For the 4-agent GLM5.2 team, prefer the reduced subset first. One train task now means 1 router run, 3 implementation attempts, and up to 3 Prime scores, so the broad 8-task split is too slow for dense GEPA or RL feedback.
 
 Use the smaller mixed subset for both GEPA and the RL comparison, then run the broader train/final sets only for checkpointed validation or end-of-run evaluation.

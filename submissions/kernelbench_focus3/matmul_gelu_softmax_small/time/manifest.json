@@ -1,0 +1,109 @@
+{
+  "target": "benchmarks/kernelbench_focus3/matmul_gelu_softmax_small.py",
+  "entry_point": "ModelNew",
+  "reference_behavior": "Linear(1024,1024) on batch 64, exact GELU, softmax(dim=1)",
+  "hardware": "NVIDIA H100 80GB HBM3 on Prime Intellect / Datacrunch",
+  "tracks": {
+    "time": {
+      "metric": "kernelbench_candidate_latency_ms",
+      "measurement_scope": "KernelBench run_and_check CUDA-event latency",
+      "lower_is_better": true
+    },
+    "energy": {
+      "metric": "corrected_candidate_energy_j",
+      "measurement_scope": "official_kernel_only_repeated_forward_pair",
+      "warmup_iters": 200,
+      "measure_iters": 200000,
+      "orders": "candidate,baseline;baseline,candidate",
+      "lower_is_better": true
+    }
+  },
+  "submissions": [
+    {
+      "file": "candidate_v5_cublaslt_time_best.py",
+      "source_experiment": "candidate_v5.py",
+      "correct": true,
+      "kernelbench_candidate_latency_ms": 0.0191,
+      "kernelbench_paired_baseline_latency_ms": 0.0250,
+      "speedup_vs_paired_baseline": 1.31,
+      "corrected_candidate_latency_ms": 0.015868928833007813,
+      "corrected_paired_baseline_latency_ms": 0.02747748046875,
+      "corrected_candidate_energy_j": 572.5034999999916,
+      "corrected_paired_baseline_energy_j": 1254.8589999999967,
+      "corrected_candidate_energy_per_iter_j": 0.0028625174999999583,
+      "corrected_paired_baseline_energy_per_iter_j": 0.0062742949999999835,
+      "correctness_stress_trials": 25,
+      "correctness_stress_allclose_1e_4": true,
+      "track_status": "time_winner_energy_winner"
+    },
+    {
+      "file": "candidate_v7_tf32_cublaslt_probe.py",
+      "source_experiment": "candidate_v7.py",
+      "correct": true,
+      "kernelbench_candidate_latency_ms": 0.0187,
+      "kernelbench_paired_baseline_latency_ms": 0.0243,
+      "speedup_vs_paired_baseline": 1.30,
+      "corrected_candidate_latency_ms": 0.01567029479980469,
+      "corrected_paired_baseline_latency_ms": 0.02854803466796875,
+      "corrected_candidate_energy_j": 559.4580000000424,
+      "corrected_paired_baseline_energy_j": 1286.0714999999618,
+      "corrected_candidate_energy_per_iter_j": 0.002797290000000212,
+      "corrected_paired_baseline_energy_per_iter_j": 0.006430357499999809,
+      "correctness_stress_trials": 25,
+      "correctness_stress_allclose_1e_4": true,
+      "track_status": "time_winner_energy_winner"
+    },
+    {
+      "file": "candidate_v8_cublas_negative_control.py",
+      "source_experiment": "candidate_v8.py",
+      "correct": true,
+      "kernelbench_candidate_latency_ms": 0.0213,
+      "kernelbench_paired_baseline_latency_ms": 0.0255,
+      "speedup_vs_paired_baseline": 1.20,
+      "corrected_candidate_latency_ms": null,
+      "corrected_paired_baseline_latency_ms": null,
+      "corrected_candidate_energy_j": null,
+      "corrected_paired_baseline_energy_j": null,
+      "track_status": "time_winner_energy_pending"
+    },
+    {
+      "file": "candidate_v2_aten_linear_epilogue.py",
+      "source_experiment": "candidate_v2.py",
+      "correct": true,
+      "kernelbench_candidate_latency_ms": 0.0214,
+      "kernelbench_paired_baseline_latency_ms": 0.0247,
+      "speedup_vs_paired_baseline": 1.15,
+      "corrected_candidate_latency_ms": 0.026185003662109376,
+      "corrected_paired_baseline_latency_ms": 0.027989352416992186,
+      "corrected_candidate_energy_j": 126.58600000001024,
+      "corrected_paired_baseline_energy_j": 111.40299999993294,
+      "track_status": "time_winner_energy_loss"
+    },
+    {
+      "file": "candidate_v3_cublas_epilogue.py",
+      "source_experiment": "candidate_v3.py",
+      "correct": true,
+      "kernelbench_candidate_latency_ms": 0.0214,
+      "kernelbench_paired_baseline_latency_ms": 0.0252,
+      "speedup_vs_paired_baseline": 1.18,
+      "corrected_candidate_latency_ms": 0.021229544067382814,
+      "corrected_paired_baseline_latency_ms": 0.02810481872558594,
+      "corrected_candidate_energy_j": 92.70899999991525,
+      "corrected_paired_baseline_energy_j": 111.59500000008848,
+      "track_status": "time_winner_energy_winner"
+    },
+    {
+      "file": "candidate_v6_vec4_epilogue.py",
+      "source_experiment": "candidate_v6.py",
+      "correct": true,
+      "kernelbench_candidate_latency_ms": 0.0216,
+      "kernelbench_paired_baseline_latency_ms": 0.0250,
+      "speedup_vs_paired_baseline": 1.16,
+      "corrected_candidate_latency_ms": 0.02218363800048828,
+      "corrected_paired_baseline_latency_ms": 0.0286623291015625,
+      "corrected_candidate_energy_j": 115.66500000003725,
+      "corrected_paired_baseline_energy_j": 109.13600000005681,
+      "track_status": "time_winner_energy_loss"
+    }
+  ]
+}
